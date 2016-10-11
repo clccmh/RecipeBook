@@ -1,29 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_breakfast"
-            <!--android:icon="@drawable/ic_menu_camera"-->
-            android:title="Breakfast" />
-        <item
-            android:id="@+id/nav_lunch"
-            <!--android:icon="@drawable/ic_menu_gallery"-->
-            android:title="Lunch" />
-        <item
-            android:id="@+id/nav_dinner"
-            <!--android:icon="@drawable/ic_menu_slideshow"-->
-            android:title="Dinner" />
-        <item
-            android:id="@+id/nav_desert"
-            <!--android:icon="@drawable/ic_menu_manage"-->
-            android:title="Desert" />
-        <item
-            android:id="@+id/nav_drinks"
-            <!--android:icon="@drawable/ic_menu_manage"-->
-            android:title="Drinks" />
-    </group>
+    <item android:title="Categories">
+        <menu android:checkableBehavior="single">
+            <item
+                android:id="@+id/nav_all"
+                android:title="All" />
+            <item
+                android:id="@+id/nav_breakfast"
+                android:title="Breakfast" />
+                <!--android:icon="@drawable/ic_menu_camera"-->
+            <item
+                android:id="@+id/nav_lunch"
+                android:title="Lunch" />
+                <!--android:icon="@drawable/ic_menu_gallery"-->
+            <item
+                android:id="@+id/nav_dinner"
+                android:title="Dinner" />
+                <!--android:icon="@drawable/ic_menu_slideshow"-->
+            <item
+                android:id="@+id/nav_desert"
+                android:title="Desert" />
+                <!--android:icon="@drawable/ic_menu_manage"-->
+            <item
+                android:id="@+id/nav_drinks"
+                android:title="Drinks" />
+                <!--android:icon="@drawable/ic_menu_manage"-->
+        </menu>
+    </item>
 
+<!--
     <item android:title="Communicate">
         <menu>
             <item
@@ -36,5 +42,6 @@
                 android:title="Send" />
         </menu>
     </item>
+-->
 
 </menu>

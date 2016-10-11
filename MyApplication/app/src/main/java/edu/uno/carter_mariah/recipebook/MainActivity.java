@@ -12,15 +12,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+    private ListView list;
+    private enum Category {ALL, BREAKFAST, LUNCH, DINNER, DESERT, DRINKS};
+    private Category category = Category.ALL;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -40,6 +50,16 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        recipes.add(new Recipe("Pancakes", "Breakfast", new String[]{"This is a test step"}, new int[]{1}, new String[]{"This is a test quantity"}, new String[]{"oz"}));
+
+        list = (ListView) findViewById(R.id.list_view);
+
+        String[] list_items = new String[1];
+        list_items[0] = recipes.get(0).name;
+
+        list.setAdapter(new ArrayAdapter(this, android.R.layout.simple_list_item_1, list_items));
+
     }
 
     @Override
@@ -80,18 +100,24 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (id == R.id.nav_all) {
+            category = Category.ALL;
+            toolbar.setTitle("Recipe Book");
+        } else if (id == R.id.nav_breakfast) {
+            category = Category.BREAKFAST;
+            toolbar.setTitle("Recipe Book: Breakfast");
+        } else if (id == R.id.nav_lunch) {
+            category = Category.LUNCH;
+            toolbar.setTitle("Recipe Book: Lunch");
+        } else if (id == R.id.nav_dinner) {
+            category = Category.DINNER;
+            toolbar.setTitle("Recipe Book: Dinner");
+        } else if (id == R.id.nav_desert) {
+            category = Category.DESERT;
+            toolbar.setTitle("Recipe Book: Desert");
+        } else if (id == R.id.nav_drinks) {
+            category = Category.DRINKS;
+            toolbar.setTitle("Recipe Book: Drinks");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

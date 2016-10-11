@@ -13,8 +13,8 @@
     tools:showIn="@layout/app_bar_main"
     tools:context="edu.uno.carter_mariah.recipebook.MainActivity">
 
-    <TextView
-        android:text="Hello World!"
+    <ListView
+        android:id="@+id/list_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </RelativeLayout>
