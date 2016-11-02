@@ -4,8 +4,17 @@ package edu.uno.carter_mariah.recipebook;
  * Created by carter on 10/11/16.
  */
 public class Recipe extends Object{
+    public enum Category {
+        ALL,
+        BREAKFAST,
+        LUNCH,
+        DINNER,
+        DESERT,
+        DRINKS
+    }
+
     String name;
-    String category;
+    Category category;
     String[] steps;
     int[] quantities;
     String[] items;
@@ -20,7 +29,7 @@ public class Recipe extends Object{
      * @param measurements
      */
     public Recipe (String name, String[] steps, int[] quantities, String[] items, String[] measurements) {
-        this(name, "", steps, quantities, items, measurements);
+        this(name, Category.ALL, steps, quantities, items, measurements);
     }
 
     /**
@@ -32,7 +41,7 @@ public class Recipe extends Object{
      * @param items
      * @param measurements
      */
-    public Recipe (String name, String category, String[] steps, int[] quantities, String[] items, String[] measurements) {
+    public Recipe (String name, Category category, String[] steps, int[] quantities, String[] items, String[] measurements) {
         this.name = name;
         this.category = category;
         this.steps = steps;
