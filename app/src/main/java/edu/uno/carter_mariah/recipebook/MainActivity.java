@@ -28,8 +28,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ArrayList<Recipe> recipes = new ArrayList<Recipe>();
-    private ListView list;
+    private RecipeList recipes = new RecipeList();
     private Toolbar toolbar;
 
     @Override
@@ -38,7 +37,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -59,54 +57,22 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         recipes.add(new Recipe("Pancakes", Recipe.Category.BREAKFAST, new String[]{"This is a test step"}, new int[]{1}, new String[]{"This is a test quantity"}, new String[]{"oz"}));
+        replaceListFragment(Recipe.Category.ALL, "Recipe Book: All");
 
-        list = (ListView) findViewById(R.id.recipe_list);
-        setRecipeList(Recipe.Category.ALL);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                setRecipe(recipes.get(position));
-            }
-        });
+       }
 
-    }
-
-    /**
-     *
-     * @param recipe
-     */
-    private void setRecipe(Recipe recipe) {
-        Fragment recipeFragment = new RecipeFragment();
+    private void replaceListFragment(Recipe.Category category, String title) {
+        Fragment recipeListFragment = new RecipeListFragment();
         Bundle args = new Bundle();
-
-        args.putStringArray("ingredients", recipe.items);
-        recipeFragment.setArguments(args);
-
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.recipe_list_fragment, recipeFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
-
-    /**
-     *
-     * @param category
-     */
-    private void setRecipeList(Recipe.Category category) {
-        //TODO: Condense with java lambdas once java8 compatibility is better in android
-        List<String> list_items = new ArrayList<>();
-        if (category == Recipe.Category.ALL) {
-            for (int i = 0; i < recipes.size(); i++) {
-                list_items.add(recipes.get(i).name);
-            }
-        } else {
-            for (int i = 0; i < recipes.size(); i++) {
-                if (recipes.get(i).category == category) {
-                    list_items.add(recipes.get(i).name);
-                }
-            }
-        }
-        list.setAdapter(new ArrayAdapter(this, android.R.layout.simple_list_item_1, list_items.toArray()));
+        args.putSerializable("Category", category);
+        args.putSerializable("List", recipes);
+        args.putString("Title", title);
+        recipeListFragment.setArguments(args);
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.recipe_list_fragment, recipeListFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
@@ -148,23 +114,17 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_all) {
-            setRecipeList(Recipe.Category.ALL);
-            toolbar.setTitle("Recipe Book");
+            replaceListFragment(Recipe.Category.ALL, "Recipe Book: All");
         } else if (id == R.id.nav_breakfast) {
-            setRecipeList(Recipe.Category.BREAKFAST);
-            toolbar.setTitle("Recipe Book: Breakfast");
+            replaceListFragment(Recipe.Category.BREAKFAST, "Recipe Book: Breakfast");
         } else if (id == R.id.nav_lunch) {
-            setRecipeList(Recipe.Category.LUNCH);
-            toolbar.setTitle("Recipe Book: Lunch");
+            replaceListFragment(Recipe.Category.LUNCH, "Recipe Book: Lunch");
         } else if (id == R.id.nav_dinner) {
-            setRecipeList(Recipe.Category.DINNER);
-            toolbar.setTitle("Recipe Book: Dinner");
+            replaceListFragment(Recipe.Category.DINNER, "Recipe Book: Dinner");
         } else if (id == R.id.nav_desert) {
-            setRecipeList(Recipe.Category.DESERT);
-            toolbar.setTitle("Recipe Book: Desert");
+            replaceListFragment(Recipe.Category.DESERT, "Recipe Book: Desert");
         } else if (id == R.id.nav_drinks) {
-            setRecipeList(Recipe.Category.DRINKS);
-            toolbar.setTitle("Recipe Book: Drinks");
+            replaceListFragment(Recipe.Category.DRINKS, "Recipe Book: Drinks");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -1,9 +1,11 @@
 package edu.uno.carter_mariah.recipebook;
 
+import java.io.Serializable;
+
 /**
  * Created by carter on 10/11/16.
  */
-public class Recipe extends Object{
+public class Recipe extends Object implements Serializable{
     public enum Category {
         ALL,
         BREAKFAST,
