@@ -19,6 +19,7 @@ public class RecipeSqlWrapper extends SQLiteOpenHelper {
     public static final String RECIPES_COLUMN_CATEGORY = "category";
 
     public static final String TABLE_ITEMS = "items";
+    public static final String ITEMS_COLUMN_ID = "_id";
     public static final String ITEMS_COLUMN_RECIPEID = "recipe_id";
     public static final String ITEMS_COLUMN_NAME = "name";
     public static final String ITEMS_COLUMN_QUANTITY = "quantity";
@@ -33,6 +34,7 @@ public class RecipeSqlWrapper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         String recipeQuery = "CREATE TABLE " + TABLE_RECIPES + "(" +
@@ -40,14 +42,35 @@ public class RecipeSqlWrapper extends SQLiteOpenHelper {
                 RECIPES_COLUMN_NAME + " TEXT UNIQUE, " +
                 RECIPES_COLUMN_CATEGORY + " TEXT " +
                 ");";
+
+        String itemQuery = "CREATE TABLE " + TABLE_ITEMS + "(" +
+                ITEMS_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                ITEMS_COLUMN_RECIPEID + " INTEGER FOREIGN KEY, " +
+                ITEMS_COLUMN_NAME + " TEXT, " +
+                ITEMS_COLUMN_QUANTITY + " INTEGER, " +
+                ITEMS_COLUMN_MEASUREMENT_UNIT + " TEXT" +
+                ");";
+
+        String stepsQuery = "CREATE TABLE " + TABLE_STEPS + "(" +
+                STEPS_COLUMN_RECIPEID + " INTEGER FOREIGN KEY, " +
+                STEPS_COLUMN_STEP_NUMBER + " INTEGER, " +
+                STEPS_COLUMN_DESCRIPTION + " TEXT, " +
+                ");";
+
         db.execSQL(recipeQuery);
+        db.execSQL(itemQuery);
+        db.execSQL(stepsQuery);
     }
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECIPES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEMS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_STEPS);
         onCreate(db);
     }
+
 
     /**
      * Adds a product to the database
@@ -72,6 +95,15 @@ public class RecipeSqlWrapper extends SQLiteOpenHelper {
             itemValues.put(ITEMS_COLUMN_MEASUREMENT_UNIT, recipe.measurementUnit[i]);
             db.insert(TABLE_ITEMS, null, itemValues);
         }
+
+        for (int i = 0; i < recipe.steps.length; i++) {
+            ContentValues stepValues = new ContentValues();
+            stepValues.put(STEPS_COLUMN_RECIPEID, "recipe_id");
+            stepValues.put(STEPS_COLUMN_STEP_NUMBER, "step_number");
+            stepValues.put(STEPS_COLUMN_DESCRIPTION, "description");
+            db.insert(TABLE_STEPS, null, stepValues);
+        }
+
         db.close();
 
     }

@@ -70,4 +70,13 @@ public class Recipe extends Object implements Serializable{
             this.y = y;
         }
     }
+
+    public static String[] getCategoriesAsStringArray() {
+        Category[] values = Category.values();
+        String[] result = new String[values.length-1];
+        for (int i = 1; i < result.length; i++) {
+            result[i] = values[i].toString();
+        }
+        return result;
+    }
 }
