@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity
         db.addRecipe(new Recipe(
                 "French Toast",
                 Recipe.Category.BREAKFAST,
+                4,
                 Arrays.asList(new String[]{"Put Eggs in pan"}),
                 items
         ));

@@ -8,4 +8,5 @@
     <string name="add_header">Add A Recipe</string>
     <string name="ingredients_header">Ingredients</string>
     <string name="steps_header">Steps</string>
+    <string name="serving_header">Servings:</string>
 </resources>

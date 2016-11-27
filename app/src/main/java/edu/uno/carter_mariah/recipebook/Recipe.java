@@ -21,12 +21,12 @@ public class Recipe extends Object implements Serializable{
     int id;
     String name;
     Category category;
-
+    int servings;
     List<String> steps;
     List<Item> items;
 
-    public Recipe (int id, String name, Category category) {
-        this(name, category, new ArrayList<String>(), new ArrayList<Item>());
+    public Recipe (int id, String name, Category category, int servings) {
+        this(name, category, servings, new ArrayList<String>(), new ArrayList<Item>());
         this.id = id;
     }
 
@@ -37,9 +37,10 @@ public class Recipe extends Object implements Serializable{
      * @param steps
      * @param items
      */
-    public Recipe (String name, Category category, List<String> steps, List<Item> items) {
+    public Recipe (String name, Category category, int servings, List<String> steps, List<Item> items) {
         this.name = name;
         this.category = category;
+        this.servings = servings;
         this.steps = steps;
         this.items = items;
     }

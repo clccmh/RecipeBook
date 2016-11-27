@@ -24,6 +24,8 @@ public class RecipeSqlWrapper extends SQLiteOpenHelper {
     public static final String RECIPES_COLUMN_ID = "_id";
     public static final String RECIPES_COLUMN_NAME = "name";
     public static final String RECIPES_COLUMN_CATEGORY = "category";
+    public static final String RECIPES_COLUMN_SERVINGS = "servings";
+
 
     public static final String TABLE_ITEMS = "items";
     public static final String ITEMS_COLUMN_ID = "_id";
@@ -47,7 +49,8 @@ public class RecipeSqlWrapper extends SQLiteOpenHelper {
         String recipeQuery = "CREATE TABLE " + TABLE_RECIPES + "(" +
                 RECIPES_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 RECIPES_COLUMN_NAME + " TEXT UNIQUE, " +
-                RECIPES_COLUMN_CATEGORY + " TEXT " +
+                RECIPES_COLUMN_CATEGORY + " TEXT, " +
+                RECIPES_COLUMN_SERVINGS + " INTEGER " +
                 ");";
 
         String itemQuery = "CREATE TABLE " + TABLE_ITEMS + "(" +
@@ -95,8 +98,9 @@ public class RecipeSqlWrapper extends SQLiteOpenHelper {
         ContentValues recipeValues = new ContentValues();
         recipeValues.put(RECIPES_COLUMN_NAME, recipe.name);
         recipeValues.put(RECIPES_COLUMN_CATEGORY, recipe.category.toString());
+        recipeValues.put(RECIPES_COLUMN_SERVINGS, recipe.servings);
         try {
-            db.insert(TABLE_RECIPES, null, recipeValues);
+            db.insertOrThrow(TABLE_RECIPES, null, recipeValues);
 
             Cursor cursor = db.rawQuery("SELECT MAX(_id) FROM recipes;", null);
             int id = 0;
@@ -146,7 +150,7 @@ public class RecipeSqlWrapper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                recipes.add(new Recipe(cursor.getInt(0), cursor.getString(1), Recipe.Category.valueOf(cursor.getString(2))));
+                recipes.add(new Recipe(cursor.getInt(0), cursor.getString(1), Recipe.Category.valueOf(cursor.getString(2)), cursor.getInt(3)));
             } while (cursor.moveToNext());
         }
 
