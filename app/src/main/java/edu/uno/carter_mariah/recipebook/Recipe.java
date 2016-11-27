@@ -54,6 +54,13 @@ public class Recipe extends Object implements Serializable{
         return "Not yet implemented";
     }
 
+    public void updateServingSize(int newServings) {
+        for (Item item : items) {
+            item.quantity = (item.quantity / servings) * newServings;
+        }
+        servings = newServings;
+    }
+
     public static String[] getCategoriesAsStringArray() {
         Category[] values = Category.values();
         String[] result = new String[values.length-1];

@@ -27,7 +27,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private RecipeList recipes = new RecipeList();
+    private RecipeList recipes;
     private Toolbar toolbar;
 
     @Override
@@ -41,8 +41,8 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, AddActivity.class);
-                startActivity(intent);
+            Intent intent = new Intent(MainActivity.this, AddActivity.class);
+            startActivity(intent);
             }
         });
 
@@ -54,19 +54,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        RecipeSqlWrapper db = new RecipeSqlWrapper(this);
-        ArrayList<Item> items = new ArrayList<>();
-        items.add(new Item("Eggs", 1, "Carton"));
-        items.add(new Item("Milk", 1, "Gallon"));
-        db.addRecipe(new Recipe(
-                "French Toast",
-                Recipe.Category.BREAKFAST,
-                4,
-                Arrays.asList(new String[]{"Put Eggs in pan"}),
-                items
-        ));
-        recipes = db.getRecipes(Recipe.Category.ALL);
+        recipes = new RecipeList(new RecipeSqlWrapper(this));
 
         replaceListFragment(Recipe.Category.ALL, "Recipe Book: All");
        }

@@ -139,7 +139,7 @@ public class RecipeSqlWrapper extends SQLiteOpenHelper {
      * @param category
      */
     public RecipeList getRecipes(Recipe.Category category) {
-        RecipeList recipes = new RecipeList();
+        RecipeList recipes = new RecipeList(this);
         String query = category == Recipe.Category.ALL
                 ? "SELECT * FROM " + TABLE_RECIPES
                 : "SELECT * FROM " + TABLE_RECIPES + " WHERE " + RECIPES_COLUMN_CATEGORY + "=" + category.toString();
@@ -175,5 +175,15 @@ public class RecipeSqlWrapper extends SQLiteOpenHelper {
         }
         db.close();
         return recipes;
+    }
+
+    public boolean remove(Recipe recipe) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        boolean success = true;
+        success = success && (db.delete(TABLE_RECIPES, RECIPES_COLUMN_ID + "=" + recipe.id, null) > 0);
+        success = success && (db.delete(TABLE_ITEMS, ITEMS_COLUMN_RECIPEID + "=" + recipe.id, null) > 0);
+        success = success && (db.delete(TABLE_STEPS, STEPS_COLUMN_RECIPEID + "=" + recipe.id, null) > 0);
+        db.close();
+        return success;
     }
 }

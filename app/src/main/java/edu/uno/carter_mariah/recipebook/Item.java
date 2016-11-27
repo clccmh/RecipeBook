@@ -7,17 +7,19 @@ import java.io.Serializable;
  */
 public class Item extends Object implements Serializable {
     String name;
-    int quantity;
+    float quantity;
     String measurement;
 
-    public Item(String name, int quantity, String measurement) {
+    public Item(String name, float quantity, String measurement) {
         this.name = name;
         this.quantity = quantity;
         this.measurement = measurement;
     }
 
     public String toString() {
-        return String.format("%d %s of %s", quantity, measurement, name);
+        return measurement != null
+                ? String.format("%.2f %s of %s", quantity, measurement, name)
+                : String.format("%.2f %s", quantity, name);
     }
 }
 

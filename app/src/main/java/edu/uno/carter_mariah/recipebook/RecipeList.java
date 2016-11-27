@@ -1,15 +1,18 @@
 package edu.uno.carter_mariah.recipebook;
 
+import android.view.View;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by carter on 11/2/16.
  */
 public class RecipeList extends ArrayList<Recipe>{
 
-    public RecipeList() {
+    RecipeSqlWrapper db;
+
+    public RecipeList(RecipeSqlWrapper db) {
         super();
+        this.db = db;
     }
 
     /**
@@ -18,7 +21,7 @@ public class RecipeList extends ArrayList<Recipe>{
      */
     public RecipeList getRecipesOfType(Recipe.Category category) {
         //TODO: Condense with java lambdas once java8 compatibility is better in android
-        RecipeList list_items = new RecipeList();
+        RecipeList list_items = new RecipeList(db);
         if (category == Recipe.Category.ALL) {
             for (int i = 0; i < super.size(); i++) {
                 list_items.add(super.get(i));
@@ -39,5 +42,15 @@ public class RecipeList extends ArrayList<Recipe>{
             names[i] = super.get(i).name;
         }
         return names;
+    }
+
+    public boolean remove(Recipe r) {
+        db.remove(r);
+        return super.remove(r);
+    }
+
+    public boolean add(Recipe r) {
+        db.addRecipe(r);
+        return super.add(r);
     }
 }
