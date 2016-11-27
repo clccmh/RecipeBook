@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,6 +14,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * TODO: Persistent storage with sqllite
@@ -50,9 +55,19 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        recipes.add(new Recipe("Pancakes", Recipe.Category.BREAKFAST, new String[]{"This is a test step"}, new int[]{1}, new String[]{"This is a test quantity"}, new String[]{"oz"}));
-        replaceListFragment(Recipe.Category.ALL, "Recipe Book: All");
+        RecipeSqlWrapper db = new RecipeSqlWrapper(this);
+        ArrayList<Item> items = new ArrayList<>();
+        items.add(new Item("Eggs", 1, "Carton"));
+        items.add(new Item("Milk", 1, "Gallon"));
+        db.addRecipe(new Recipe(
+                "French Toast",
+                Recipe.Category.BREAKFAST,
+                Arrays.asList(new String[]{"Put Eggs in pan"}),
+                items
+        ));
+        recipes = db.getRecipes(Recipe.Category.ALL);
 
+        replaceListFragment(Recipe.Category.ALL, "Recipe Book: All");
        }
 
     private void replaceListFragment(Recipe.Category category, String title) {

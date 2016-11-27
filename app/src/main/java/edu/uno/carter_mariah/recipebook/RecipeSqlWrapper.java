@@ -2,8 +2,15 @@ package edu.uno.carter_mariah.recipebook;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by carter on 11/17/16.
@@ -45,20 +52,25 @@ public class RecipeSqlWrapper extends SQLiteOpenHelper {
 
         String itemQuery = "CREATE TABLE " + TABLE_ITEMS + "(" +
                 ITEMS_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                ITEMS_COLUMN_RECIPEID + " INTEGER FOREIGN KEY, " +
+                ITEMS_COLUMN_RECIPEID + " INTEGER, " +
                 ITEMS_COLUMN_NAME + " TEXT, " +
                 ITEMS_COLUMN_QUANTITY + " INTEGER, " +
-                ITEMS_COLUMN_MEASUREMENT_UNIT + " TEXT" +
+                ITEMS_COLUMN_MEASUREMENT_UNIT + " TEXT, " +
+                "FOREIGN KEY(" + ITEMS_COLUMN_RECIPEID + ") REFERENCES " + TABLE_RECIPES +
                 ");";
 
         String stepsQuery = "CREATE TABLE " + TABLE_STEPS + "(" +
-                STEPS_COLUMN_RECIPEID + " INTEGER FOREIGN KEY, " +
+                STEPS_COLUMN_RECIPEID + " INTEGER, " +
                 STEPS_COLUMN_STEP_NUMBER + " INTEGER, " +
                 STEPS_COLUMN_DESCRIPTION + " TEXT, " +
+                "FOREIGN KEY(" + STEPS_COLUMN_RECIPEID + ") REFERENCES " + TABLE_RECIPES +
                 ");";
 
+        Log.d("Creating recipe table", recipeQuery);
         db.execSQL(recipeQuery);
+        Log.d("Creating item table", itemQuery);
         db.execSQL(itemQuery);
+        Log.d("Creating steps table", stepsQuery);
         db.execSQL(stepsQuery);
     }
 
@@ -83,29 +95,38 @@ public class RecipeSqlWrapper extends SQLiteOpenHelper {
         ContentValues recipeValues = new ContentValues();
         recipeValues.put(RECIPES_COLUMN_NAME, recipe.name);
         recipeValues.put(RECIPES_COLUMN_CATEGORY, recipe.category.toString());
-        db.insert(TABLE_RECIPES, null, recipeValues);
+        try {
+            db.insert(TABLE_RECIPES, null, recipeValues);
 
-        int id = 0; //TODO: GET RECIPE ID
+            Cursor cursor = db.rawQuery("SELECT MAX(_id) FROM recipes;", null);
+            int id = 0;
+            if (cursor.moveToFirst()) {
+                id = cursor.getInt(0);
+            } else {
+                throw new SQLiteException("Recipe ID not found");
+            }
 
-        for (int i = 0; i < recipe.items.length; i++) {
-            ContentValues itemValues = new ContentValues();
-            itemValues.put(ITEMS_COLUMN_RECIPEID, id);
-            itemValues.put(ITEMS_COLUMN_NAME, recipe.items[i]);
-            itemValues.put(ITEMS_COLUMN_QUANTITY, recipe.quantities[i]);
-            itemValues.put(ITEMS_COLUMN_MEASUREMENT_UNIT, recipe.measurementUnit[i]);
-            db.insert(TABLE_ITEMS, null, itemValues);
+            for (int i = 0; i < recipe.items.size(); i++) {
+                ContentValues itemValues = new ContentValues();
+                itemValues.put(ITEMS_COLUMN_RECIPEID, id);
+                itemValues.put(ITEMS_COLUMN_NAME, recipe.items.get(i).name);
+                itemValues.put(ITEMS_COLUMN_QUANTITY, recipe.items.get(i).quantity);
+                itemValues.put(ITEMS_COLUMN_MEASUREMENT_UNIT, recipe.items.get(i).measurement);
+                db.insert(TABLE_ITEMS, null, itemValues);
+            }
+
+            for (int i = 0; i < recipe.steps.size(); i++) {
+                ContentValues stepValues = new ContentValues();
+                stepValues.put(STEPS_COLUMN_RECIPEID, id);
+                stepValues.put(STEPS_COLUMN_STEP_NUMBER, i);
+                stepValues.put(STEPS_COLUMN_DESCRIPTION, recipe.steps.get(i));
+                db.insert(TABLE_STEPS, null, stepValues);
+            }
+        } catch (SQLiteConstraintException e) {
+            Log.e("ERROR", e.toString());
+        } finally {
+            db.close();
         }
-
-        for (int i = 0; i < recipe.steps.length; i++) {
-            ContentValues stepValues = new ContentValues();
-            stepValues.put(STEPS_COLUMN_RECIPEID, "recipe_id");
-            stepValues.put(STEPS_COLUMN_STEP_NUMBER, "step_number");
-            stepValues.put(STEPS_COLUMN_DESCRIPTION, "description");
-            db.insert(TABLE_STEPS, null, stepValues);
-        }
-
-        db.close();
-
     }
 
     /**
@@ -113,8 +134,42 @@ public class RecipeSqlWrapper extends SQLiteOpenHelper {
      *
      * @param category
      */
-    public void getRecipes(Recipe.Category category) {
+    public RecipeList getRecipes(Recipe.Category category) {
+        RecipeList recipes = new RecipeList();
+        String query = category == Recipe.Category.ALL
+                ? "SELECT * FROM " + TABLE_RECIPES
+                : "SELECT * FROM " + TABLE_RECIPES + " WHERE " + RECIPES_COLUMN_CATEGORY + "=" + category.toString();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
 
+        Log.d("db found", String.valueOf(cursor.getCount()));
+
+        if (cursor.moveToFirst()) {
+            do {
+                recipes.add(new Recipe(cursor.getInt(0), cursor.getString(1), Recipe.Category.valueOf(cursor.getString(2))));
+            } while (cursor.moveToNext());
+        }
+
+        for (Recipe recipe : recipes) {
+            query = "SELECT " + STEPS_COLUMN_DESCRIPTION + " FROM " + TABLE_STEPS +
+                    " WHERE " + STEPS_COLUMN_RECIPEID + "=" + recipe.id;
+            cursor = db.rawQuery(query, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    recipe.steps.add(cursor.getString(0));
+                } while (cursor.moveToNext());
+            }
+
+            query = "SELECT " + ITEMS_COLUMN_NAME + ", " + ITEMS_COLUMN_QUANTITY + ", " + ITEMS_COLUMN_MEASUREMENT_UNIT +
+                    " FROM " + TABLE_ITEMS + " WHERE " + ITEMS_COLUMN_RECIPEID + "=" + recipe.id;
+            cursor = db.rawQuery(query, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    recipe.items.add(new Item(cursor.getString(0), cursor.getInt(1), cursor.getString(2)));
+                } while (cursor.moveToNext());
+            }
+        }
+        db.close();
+        return recipes;
     }
-
 }

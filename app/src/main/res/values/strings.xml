@@ -6,4 +6,6 @@
 
     <string name="action_settings">Settings</string>
     <string name="add_header">Add A Recipe</string>
+    <string name="ingredients_header">Ingredients</string>
+    <string name="steps_header">Steps</string>
 </resources>

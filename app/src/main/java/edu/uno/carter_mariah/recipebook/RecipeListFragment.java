@@ -41,7 +41,7 @@ public class RecipeListFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Fragment recipeFragment = new RecipeFragment();
                 Bundle args = new Bundle();
-                args.putStringArray("ingredients", recipes.get(position).items);
+                args.putSerializable("recipe", recipes.get(position));
                 recipeFragment.setArguments(args);
                 getFragmentManager()
                         .beginTransaction()
