@@ -9,9 +9,6 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by carter on 11/17/16.
  */
@@ -154,7 +151,9 @@ public class RecipeSqlWrapper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
 
+
         for (Recipe recipe : recipes) {
+            db = this.getWritableDatabase();
             query = "SELECT " + STEPS_COLUMN_DESCRIPTION + " FROM " + TABLE_STEPS +
                     " WHERE " + STEPS_COLUMN_RECIPEID + "=" + recipe.id;
             cursor = db.rawQuery(query, null);
@@ -164,6 +163,7 @@ public class RecipeSqlWrapper extends SQLiteOpenHelper {
                 } while (cursor.moveToNext());
             }
 
+            db = this.getWritableDatabase();
             query = "SELECT " + ITEMS_COLUMN_NAME + ", " + ITEMS_COLUMN_QUANTITY + ", " + ITEMS_COLUMN_MEASUREMENT_UNIT +
                     " FROM " + TABLE_ITEMS + " WHERE " + ITEMS_COLUMN_RECIPEID + "=" + recipe.id;
             cursor = db.rawQuery(query, null);

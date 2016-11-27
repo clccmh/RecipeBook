@@ -1,6 +1,5 @@
 package edu.uno.carter_mariah.recipebook;
 
-import android.view.View;
 import java.util.ArrayList;
 
 /**

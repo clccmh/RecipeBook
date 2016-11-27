@@ -45,15 +45,6 @@ public class Recipe extends Object implements Serializable{
         this.items = items;
     }
 
-    /**
-     *
-     * @param i
-     * @return A string representing the item with quantity and measurement
-     */
-    public String getItem(int i) {
-        return "Not yet implemented";
-    }
-
     public void updateServingSize(int newServings) {
         for (Item item : items) {
             item.quantity = (item.quantity / servings) * newServings;
@@ -71,7 +62,12 @@ public class Recipe extends Object implements Serializable{
     }
 
     public String toString() {
-        return String.format("ID: %d\tName: %s", this.id, this.name);
+        return String.format("ID: %d\tName: %s\nItems:%s\nSteps:%s",
+                this.id,
+                this.name,
+                this.items.toString(),
+                this.steps.toString()
+        );
     }
 
 }

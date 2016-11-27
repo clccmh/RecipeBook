@@ -9,4 +9,15 @@
     <string name="ingredients_header">Ingredients</string>
     <string name="steps_header">Steps</string>
     <string name="serving_header">Servings:</string>
+
+    <string name="add_item">Add Another Item</string>
+    <string name="add_step">Add Another Step</string>
+    <string name="add_recipe">Add This Recipe</string>
+
+    <string-array name="measurement_values">
+        <item>none</item>
+        <item>oz</item>
+        <item>gal</item>
+        <item>quarts</item>
+    </string-array>
 </resources>
