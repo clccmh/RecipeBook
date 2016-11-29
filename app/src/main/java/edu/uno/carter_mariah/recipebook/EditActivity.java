@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -20,13 +21,20 @@ public class EditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
+        final Recipe originalRecipe = (Recipe) getIntent().getSerializableExtra("recipe");
 
-        final Spinner categorySpinner = (Spinner) findViewById(R.id.category_spinner);
-        categorySpinner.setAdapter(new ArrayAdapter<String>(
+        Button addButton = (Button) findViewById(R.id.add_recipe);
+        addButton.setText("Save Changes");
+
+        final EditText name = (EditText) findViewById(R.id.name_edittext);
+        final Spinner category = (Spinner) findViewById(R.id.category_spinner);
+        final EditText serves = (EditText) findViewById(R.id.serves_number);
+
+        category.setAdapter(new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
                 Recipe.getCategoriesAsStringArray()
-                ));
+        ));
 
         Button addItemButton = (Button) findViewById(R.id.add_item);
         addItemButton.setOnClickListener(new View.OnClickListener() {
@@ -48,14 +56,35 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
+        name.setText(originalRecipe.name);
+        category.setSelection(getIndex(category, originalRecipe.category.toString()));
+        serves.setText(Integer.toString(originalRecipe.servings));
+
+        for (String step : originalRecipe.steps) {
+            View newStep = getLayoutInflater().inflate(R.layout.add_step_fragment, null);
+
+            ((EditText)newStep.findViewById(R.id.step_description)).setText(step);
+
+            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.steps);
+            linearLayout.addView(newStep, linearLayout.getChildCount() - 1);
+        }
+
+        for (Item item : originalRecipe.items) {
+            View newStep = getLayoutInflater().inflate(R.layout.add_item_fragment, null);
+
+            ((EditText)newStep.findViewById(R.id.item_name)).setText(item.name);
+            ((EditText)newStep.findViewById(R.id.item_quantity)).setText(Float.toString(item.quantity));
+            Spinner measurement = (Spinner) newStep.findViewById(R.id.item_measurement);
+            measurement.setSelection(getIndex(measurement, item.measurement));
+
+            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.items);
+            linearLayout.addView(newStep, linearLayout.getChildCount() - 1);
+        }
+
         Button add = (Button) findViewById(R.id.add_recipe);
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText name = (EditText) findViewById(R.id.name_edittext);
-                Spinner category = (Spinner) findViewById(R.id.category_spinner);
-                EditText serves = (EditText) findViewById(R.id.serves_number);
-
                 ArrayList<String> stepList = new ArrayList<>();
                 LinearLayout steps = (LinearLayout) findViewById(R.id.steps);
                 for (int i = 0; i < steps.getChildCount(); i++) {
@@ -100,6 +129,7 @@ public class EditActivity extends AppCompatActivity {
                     );
                     Log.d("Recipe", recipe.toString());
                     RecipeSqlWrapper db = new RecipeSqlWrapper(getApplicationContext());
+                    db.remove(originalRecipe);
                     db.addRecipe(recipe);
                     Intent intent = new Intent(EditActivity.this, MainActivity.class);
                     startActivity(intent);
@@ -112,4 +142,16 @@ public class EditActivity extends AppCompatActivity {
         });
 
     }
+
+    private int getIndex(Spinner spinner, String myString) {
+        int index = 0;
+        for (int i=0;i<spinner.getCount();i++){
+            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)){
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
 }

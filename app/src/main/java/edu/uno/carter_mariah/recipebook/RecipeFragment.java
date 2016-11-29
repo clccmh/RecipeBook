@@ -129,6 +129,11 @@ public class RecipeFragment extends Fragment {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
+        if (item.getItemId() == R.id.action_edit) {
+            Intent intent = new Intent(view.getContext(), EditActivity.class);
+            intent.putExtra("recipe", recipe);
+            startActivity(intent);
+        }
         return true;
     }
 

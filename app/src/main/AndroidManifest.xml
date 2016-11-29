@@ -20,6 +20,7 @@
         </activity>
         <activity android:name=".OldAddActivity"></activity>
         <activity android:name=".AddActivity"></activity>
+        <activity android:name=".EditActivity"></activity>
     </application>
 
 </manifest>

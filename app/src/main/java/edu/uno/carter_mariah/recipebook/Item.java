@@ -117,11 +117,6 @@ public class Item extends Object implements Serializable {
             measurement = newMeasurement;
             return true;
         } else {
-            if (conversions.containsKey(measurement))
-                Log.d("Measurement", "Contains key");
-
-            if (conversions.get(measurement).containsKey(newMeasurement))
-                Log.d("Measurement", "Contains new measurement key");
             return false;
         }
     }

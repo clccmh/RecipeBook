@@ -6,6 +6,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <EditText
         android:hint="Step Description"
+        android:id="@+id/step_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>
