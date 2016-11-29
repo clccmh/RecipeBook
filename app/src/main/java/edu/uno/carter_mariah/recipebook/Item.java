@@ -17,7 +17,7 @@ public class Item extends Object implements Serializable {
     }
 
     public String toString() {
-        return measurement != null
+        return !measurement.equals("none")
                 ? String.format("%.2f %s of %s", quantity, measurement, name)
                 : String.format("%.2f %s", quantity, name);
     }

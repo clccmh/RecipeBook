@@ -17,7 +17,15 @@
     <string-array name="measurement_values">
         <item>none</item>
         <item>oz</item>
-        <item>gal</item>
+        <item>cups</item>
+        <item>teaspoons</item>
+        <item>tablespoons</item>
         <item>quarts</item>
+        <item>gallons</item>
+        <item>pints</item>
+        <item>liters</item>
+        <item>milliliters</item>
+        <item>slices</item>
+
     </string-array>
 </resources>

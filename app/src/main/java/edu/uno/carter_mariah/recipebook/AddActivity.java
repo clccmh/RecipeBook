@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -63,12 +64,12 @@ public class AddActivity extends AppCompatActivity {
                 for (int i = 0; i < steps.getChildCount(); i++) {
                     View child = steps.getChildAt(i);
                     Log.d("Tag", child.getTag() == null ? "null" : child.getTag().toString());
-//                    if (child.getTag().toString().equals("step")) {
                     if (child.getClass() == LinearLayout.class) {
                         LinearLayout step = (LinearLayout) child;
                         EditText stepText = (EditText) step.getChildAt(0);
                         Log.d("Step Text", stepText.getText().toString());
-                        stepList.add(stepText.getText().toString());
+                        if (!stepText.getText().toString().equals(""))
+                            stepList.add(stepText.getText().toString());
                     }
                 }
 
@@ -77,33 +78,39 @@ public class AddActivity extends AppCompatActivity {
                 for (int i = 0; i < items.getChildCount(); i++) {
                     View child = items.getChildAt(i);
                     Log.d("Tag", child.getTag() == null ? "null" : child.getTag().toString());
-//                    if (child.getTag() == "item") {
                     if (child.getClass() == LinearLayout.class) {
                         LinearLayout item = (LinearLayout) child;
                         EditText itemName = (EditText) item.getChildAt(0);
                         EditText itemCount = (EditText) item.getChildAt(1);
                         Spinner itemMeasurement = (Spinner) item.getChildAt(2);
-
-                        itemList.add(new Item(
-                                itemName.getText().toString(),
-                                Float.parseFloat(itemCount.getText().toString()),
-                                itemMeasurement.getSelectedItem().toString()
-                        ));
+                        if (!itemName.getText().toString().equals("")) {
+                            itemList.add(new Item(
+                                    itemName.getText().toString(),
+                                    itemCount.getText().toString().equals("") ? 0 : Float.parseFloat(itemCount.getText().toString()),
+                                    itemMeasurement.getSelectedItem().toString()
+                            ));
+                        }
                     }
                 }
 
-                Recipe recipe = new Recipe(
-                        name.getText().toString(),
-                        Recipe.Category.valueOf(category.getSelectedItem().toString()),
-                        Integer.parseInt(serves.getText().toString()),
-                        stepList,
-                        itemList
-                );
-                Log.d("Recipe", recipe.toString());
-                RecipeSqlWrapper db = new RecipeSqlWrapper(getApplicationContext());
-                db.addRecipe(recipe);
-                Intent intent = new Intent(AddActivity.this, MainActivity.class);
-                startActivity(intent);
+                if (!name.getText().toString().equals("") && !serves.getText().toString().equals("")) {
+                    Recipe recipe = new Recipe(
+                            name.getText().toString(),
+                            Recipe.Category.valueOf(category.getSelectedItem().toString()),
+                            Integer.parseInt(serves.getText().toString()),
+                            stepList,
+                            itemList
+                    );
+                    Log.d("Recipe", recipe.toString());
+                    RecipeSqlWrapper db = new RecipeSqlWrapper(getApplicationContext());
+                    db.addRecipe(recipe);
+                    Intent intent = new Intent(AddActivity.this, MainActivity.class);
+                    startActivity(intent);
+                } else if (name.getText().toString().equals("")) {
+                    Toast.makeText(getApplicationContext(), "Recipe must have a name", Toast.LENGTH_SHORT).show();
+                } else if (serves.getText().toString().equals("")) {
+                    Toast.makeText(getApplicationContext(), "Recipe must have a serving size", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
