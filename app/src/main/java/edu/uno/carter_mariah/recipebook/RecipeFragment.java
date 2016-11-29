@@ -58,13 +58,8 @@ public class RecipeFragment extends Fragment {
         LinearLayout ingredients = (LinearLayout) view.findViewById(R.id.ingredients);
         ingredients.removeAllViews();
         for (final Item item : recipe.items) {
-            final TextView tv = new TextView(view.getContext());
+            final TextView tv = (TextView) View.inflate(view.getContext(), R.layout.recipe_fragment_text, null);
             tv.setText(item.toString());
-            tv.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_Medium);
-            tv.setLayoutParams(new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            ));
 
             tv.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -101,11 +96,12 @@ public class RecipeFragment extends Fragment {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     public void setSteps() {
         Log.d("Set steps", recipe.steps.toString());
         LinearLayout steps = (LinearLayout) view.findViewById(R.id.steps);
         for (String step : recipe.steps) {
-            TextView tv = new TextView(view.getContext());
+            TextView tv = (TextView) View.inflate(view.getContext(), R.layout.recipe_fragment_text, null);
             tv.setText(step);
             steps.addView(tv);
         }

@@ -110,13 +110,17 @@ public class Item extends Object implements Serializable {
         conversions.put(TABLESPOONS, tablespoons);
         conversions.put(TEASPOONS, teaspoons);
 
-        Log.d("Measurement", measurement);
-        Log.d("New Measurement", newMeasurement);
         if (conversions.containsKey(measurement) && conversions.get(measurement).containsKey(newMeasurement)) {
             quantity *= ((Float) conversions.get(measurement).get(newMeasurement)).floatValue();
             measurement = newMeasurement;
             return true;
         } else {
+            if (conversions.containsKey(measurement)){
+                Log.d("Measurement", measurement);
+                if (conversions.get(measurement).containsKey(newMeasurement)) {
+                    Log.d("New Measurement", newMeasurement);
+                }
+            }
             return false;
         }
     }
