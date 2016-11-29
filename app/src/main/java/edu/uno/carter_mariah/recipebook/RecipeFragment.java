@@ -1,6 +1,8 @@
 package edu.uno.carter_mariah.recipebook;
 
+import android.annotation.TargetApi;
 import android.app.Fragment;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -46,6 +48,7 @@ public class RecipeFragment extends Fragment {
         return view;
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     public void setItems() {
         Log.d("Set items", recipe.items.toString());
         LinearLayout ingredients = (LinearLayout) view.findViewById(R.id.ingredients);
@@ -53,6 +56,12 @@ public class RecipeFragment extends Fragment {
         for (final Item item : recipe.items) {
             final TextView tv = new TextView(view.getContext());
             tv.setText(item.toString());
+            tv.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_Medium);
+            tv.setLayoutParams(new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            ));
+
             tv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

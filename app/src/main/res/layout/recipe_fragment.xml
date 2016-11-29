@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:text="@string/ingredients_header"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
 
         <LinearLayout
             android:id="@+id/ingredients"
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:text="@string/steps_header"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
 
         <LinearLayout
             android:id="@+id/steps"
