@@ -1,6 +1,8 @@
 package edu.uno.carter_mariah.recipebook;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by carter on 11/26/16.
@@ -21,5 +23,36 @@ public class Item extends Object implements Serializable {
                 ? String.format("%.2f %s of %s", quantity, measurement, name)
                 : String.format("%.2f %s", quantity, name);
     }
+
+    public boolean convert(String newMeasurement) {
+        Map<String, Float> oz = new HashMap<>();
+        oz.put("cups", 0.8f);
+        oz.put("gallons", 0.128f);
+
+        Map<String, Float> gal = new HashMap<>();
+        gal.put("quarts", 4f);
+        gal.put("pints", 8f);
+        gal.put("cups", 16f);
+        gal.put("ounces", 128f);
+        gal.put("liters", 3.8f);
+
+        Map<String, Float> quart = new HashMap<>();
+        quart.put("pints", 2f);
+        quart.put("cups", 4f);
+        quart.put("ounces", 32f);
+
+        Map<String, Map> conversions = new HashMap<>();
+        conversions.put("ounces", oz);
+        conversions.put("gallons", gal);
+        conversions.put("quarts", quart);
+
+        if (conversions.containsKey(measurement) && conversions.get(measurement).containsKey(newMeasurement)) {
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
 

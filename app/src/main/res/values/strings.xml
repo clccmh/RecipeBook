@@ -16,7 +16,7 @@
 
     <string-array name="measurement_values">
         <item>none</item>
-        <item>oz</item>
+        <item>ounces</item>
         <item>cups</item>
         <item>teaspoons</item>
         <item>tablespoons</item>
