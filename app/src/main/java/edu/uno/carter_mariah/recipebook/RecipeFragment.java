@@ -2,12 +2,15 @@ package edu.uno.carter_mariah.recipebook;
 
 import android.annotation.TargetApi;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +29,7 @@ public class RecipeFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.recipe_fragment, container, false);
         recipe = (Recipe) getArguments().getSerializable("recipe");
+        setHasOptionsMenu(true);
 
         setItems();
         setSteps();
@@ -106,5 +110,27 @@ public class RecipeFragment extends Fragment {
             steps.addView(tv);
         }
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+       inflater.inflate(R.menu.recipe, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_delete) {
+            RecipeSqlWrapper db = new RecipeSqlWrapper(view.getContext());
+            db.remove(recipe);
+
+            // This is dirty. There is probably a better way to do this.
+            // TODO: Find a more correct way to do this.
+            super.getActivity().finish();
+            Intent intent = new Intent(view.getContext(), MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
+        return true;
+    }
+
 
 }
