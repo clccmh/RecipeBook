@@ -3,12 +3,16 @@ package edu.uno.carter_mariah.recipebook;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by carter on 11/1/16.
@@ -46,9 +50,40 @@ public class RecipeFragment extends Fragment {
         Log.d("Set items", recipe.items.toString());
         LinearLayout ingredients = (LinearLayout) view.findViewById(R.id.ingredients);
         ingredients.removeAllViews();
-        for (Item item : recipe.items) {
-            TextView tv = new TextView(view.getContext());
+        for (final Item item : recipe.items) {
+            final TextView tv = new TextView(view.getContext());
             tv.setText(item.toString());
+            tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    v.performLongClick();
+                }
+            });
+
+            tv.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+                View v;
+                @Override
+                public void onCreateContextMenu(ContextMenu menu, final View v, final ContextMenu.ContextMenuInfo menuInfo) {
+                    this.v = v;
+                    MenuItem.OnMenuItemClickListener itemClickListener = new MenuItem.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            if (!item.convert(menuItem.getTitle().toString())) {
+                                Toast.makeText(v.getContext(), "Those measurements don't work together. I cannot convert the item.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                tv.setText(item.toString());
+                            }
+                            return false;
+                        }
+                    };
+
+                    menu.setHeaderTitle("Convert");
+                    for (String val : item.possibleConversions) {
+                        menu.add(val).setOnMenuItemClickListener(itemClickListener);
+                    }
+                }
+            });
+
             ingredients.addView(tv);
         }
     }
